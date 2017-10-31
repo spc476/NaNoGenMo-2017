@@ -1,7 +1,7 @@
 
 Use The Up-Goer-Five 10 hundred most common words to make a story.
 https://www.authorea.com/inst/15051
-
+via https://news.ycombinator.com/item?id=15588456
 
 1000 most common words:
 http://splasho.com/upgoer5/phpspellcheck/dictionaries/1000.dicin

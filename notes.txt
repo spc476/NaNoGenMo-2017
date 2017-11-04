@@ -18,3 +18,8 @@ via https://news.ycombinator.com/item?id=15588456
 
 1000 most common words:
 http://splasho.com/upgoer5/phpspellcheck/dictionaries/1000.dicin
+
+
+---
+
+gcide: http://www.ibiblio.org/webster/

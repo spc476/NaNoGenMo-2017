@@ -51,20 +51,43 @@ local mword  = Cg(
                    * Ct((mhw * noHWSMHW)^1) * SMHW
                    * Ct((noHWDEF * def)^0)
                  )
-
+local dump = require "org.conman.table".dump
 local doc = Cf(
                 Ct"" * (noHW * (mword + word))^1,
                 function(acc,term,defs)
+                  local function addword(w,d)
+                    if w == "Love" then
+                      dump("Love",d)
+                      
+                      if not acc[w] then
+                        acc[w] = d
+                      else
+                        for _,v in ipairs(d) do
+                          table.insert(acc[w],v)
+                        end
+                      end
+                    end
+                  end
+                  
                   if type(term) == 'table' then
                     for _,w in ipairs(term) do
-                      acc[w] = defs
+                      addword(w,defs)
                     end
                   else
-                    acc[term] = defs
+                    addword(term,defs)
                   end
                   return acc
                 end
               )
+
+
+local raw do
+  local f = io.open("../refs/gcide_xml-0.51/xml_files/gcide_l.xml","r")
+  raw = f:read("*a")
+  f:close()
+end
+
+--[[
 
 local raw do
   raw = ""
@@ -79,5 +102,7 @@ local raw do
     f:close()
   end
 end
+--]]
 
 local dict = doc:match(raw)
+dump("Love",dict.Love)

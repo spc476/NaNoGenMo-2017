@@ -23,3 +23,4 @@ http://splasho.com/upgoer5/phpspellcheck/dictionaries/1000.dicin
 ---
 
 gcide: http://www.ibiblio.org/webster/
+http://wordnet.princeton.edu/

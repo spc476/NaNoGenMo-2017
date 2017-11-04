@@ -18,16 +18,33 @@
 -- Comments, questions and criticisms can be sent to: sean@conman.org
 --
 -- ********************************************************************
+-- luacheck: ignore 611
 
+local entity = require "entity"
 local lpeg = require "lpeg"
 
-local Cc = lpeg.Cc
 local Cf = lpeg.Cf
 local Cg = lpeg.Cg
+local Cs = lpeg.Cs
 local Ct = lpeg.Ct
 local C  = lpeg.C
 local P  = lpeg.P
 local R  = lpeg.R
+local S  = lpeg.S
+
+local char      = (P"&" / "")
+                * (R("AZ","az")^1 / entity)
+                * (P";" / "")
+                + S[["*`]] / ""
+                + P(1)
+local cleanterm = Cs(char^1)
+
+local dchar     = (P"&" / "")
+                * (R("AZ","az")^1 / entity)
+                * (P";" / "")
+                + (P"<" * (P(1) - P">")^0 * P">") / ""
+                + P(1)
+local cleandef  = Cs(dchar^1)
 
 local HW   = P"<hw>"
 local MHW  = P"<mhw>"
@@ -67,20 +84,20 @@ local doc    = Cf(
                      
                      local defs = {}
                      for _,v in ipairs(termdef) do
-                       table.insert(defs,v)
+                       table.insert(defs,cleandef:match(v))
                      end
                      
                      if type(term) == 'table' then
                        for _,w in ipairs(term) do
-                         addword(w,defs)
+                         addword(cleanterm:match(w),defs)
                        end
                      else
-                       addword(term,defs)
+                       addword(cleanterm:match(term),defs)
                      end
                      return acc
                    end
                )
-
+               
 local raw do
   raw = ""
   for i = 1 , 25 do
@@ -95,6 +112,9 @@ local raw do
   end
 end
 
-local dump = require "org.conman.table".dump
 local dict = doc:match(raw)
-dump("Love",dict.Love)
+for _,def in pairs(dict) do
+  for _,d in ipairs(def) do
+    print(d)
+  end
+end

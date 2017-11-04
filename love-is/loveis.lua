@@ -21,6 +21,7 @@
 
 local lpeg = require "lpeg"
 
+local Cc = lpeg.Cc
 local Cf = lpeg.Cf
 local Cg = lpeg.Cg
 local Ct = lpeg.Ct
@@ -46,48 +47,39 @@ local mhw = (HW * #R"!~") * C(noSHW)  * SHW
 local def = DEF           * C(noSDEF) * SDEF
 
 local word   = Cg(hw * Ct((noHWDEF * def)^0))
-local mword  = Cg(
-                   MHW * noHW
-                   * Ct((mhw * noHWSMHW)^1) * SMHW
+local mword  = MHW * noHW
+             * Cg(
+                     Ct((mhw * noHWSMHW)^1) * SMHW
                    * Ct((noHWDEF * def)^0)
                  )
-local dump = require "org.conman.table".dump
-local doc = Cf(
-                Ct"" * (noHW * (mword + word))^1,
-                function(acc,term,defs)
-                  local function addword(w,d)
-                    if w == "Love" then
-                      dump("Love",d)
-                      
-                      if not acc[w] then
-                        acc[w] = d
-                      else
-                        for _,v in ipairs(d) do
-                          table.insert(acc[w],v)
-                        end
-                      end
-                    end
-                  end
-                  
-                  if type(term) == 'table' then
-                    for _,w in ipairs(term) do
-                      addword(w,defs)
-                    end
-                  else
-                    addword(term,defs)
-                  end
-                  return acc
-                end
-              )
-
-
-local raw do
-  local f = io.open("../refs/gcide_xml-0.51/xml_files/gcide_l.xml","r")
-  raw = f:read("*a")
-  f:close()
-end
-
---[[
+local doc    = Cf(
+                   Ct"" * (noHW * (mword + word))^1,
+                   function(acc,term,termdef)
+                     local function addword(w,defs)
+                       if not acc[w] then
+                         acc[w] = {}
+                       end
+                       
+                       for _,v in ipairs(defs) do
+                         table.insert(acc[w],v)
+                       end
+                     end
+                     
+                     local defs = {}
+                     for _,v in ipairs(termdef) do
+                       table.insert(defs,v)
+                     end
+                     
+                     if type(term) == 'table' then
+                       for _,w in ipairs(term) do
+                         addword(w,defs)
+                       end
+                     else
+                       addword(term,defs)
+                     end
+                     return acc
+                   end
+               )
 
 local raw do
   raw = ""
@@ -102,7 +94,7 @@ local raw do
     f:close()
   end
 end
---]]
 
+local dump = require "org.conman.table".dump
 local dict = doc:match(raw)
 dump("Love",dict.Love)

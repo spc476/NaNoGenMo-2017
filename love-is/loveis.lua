@@ -20,9 +20,11 @@
 -- ********************************************************************
 -- luacheck: ignore 611
 
+local wrap   = require "org.conman.string".wrap
 local entity = require "entity"
-local lpeg = require "lpeg"
+local lpeg   = require "lpeg"
 
+local Cc = lpeg.Cc
 local Cf = lpeg.Cf
 local Cg = lpeg.Cg
 local Cs = lpeg.Cs
@@ -120,22 +122,61 @@ end
 -- ************************************************************************
 
 do
-  local word = R("''","--","AZ","az")^1
-end
-
-
-do
-  local list = {}
-  for name in pairs(dict) do
-    table.insert(list,name)
-  end
+  require "org.conman.math".randomseed()
   
-  table.sort(list)
+  local fixcase = Cs(
+                      (R"az" / function(c) return c:upper() end + P(1))
+                      * P(1)^0
+                    )
   
-  for _,term in ipairs(list) do
-    print(term)
-    for _,definition in ipairs(dict[term]) do
-      print("",definition)
+  local function lookup(term)
+    local list
+    
+    if dict[term] then
+      list = dict[term]
+    else
+      local l = fixcase:match(term)
+      if dict[l] then
+        list = dict[l]
+      else
+        return term
+      end
     end
+    
+    return list[math.random(#list)]
   end
+  
+  local word   = R("''","--","AZ","az")^1
+  local term   = word / lookup
+               + P(1)
+  local corpus = Cs(term^1)
+  
+  local count  = Cf(
+                     Cc(0) * (word * Cc(1) + P(1) * Cc(0))^1,
+                     function(acc,count)
+                       return acc + count
+                     end
+                   )
+                   
+  local text = "Love"
+  local num
+  local loop = 0
+  
+  repeat
+    loop = loop + 1
+    text = corpus:match(text)
+    num  = count:match(text)
+  until num >= 50000
+  
+  print(string.format([[
+
+                                 Love is ...
+
+                            A Definitional Novel
+                        in %d expansions and %d words
+                        
+                        
+]],loop,num))
+
+  print(wrap(text))
 end

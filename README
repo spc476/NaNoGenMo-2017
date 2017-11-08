@@ -1,0 +1,39 @@
+
+                                 Love is ...
+
+                            A Definitional Novel
+                        in 4 expansions and 170007 words
+
+                           Created by Sean Conner.
+          Based upon an idea from Douglas Hofstadter from his book
+     _Metamagical Themas: Questing for the Essence of Mind and Pattern_
+
+  This is my 2017 entry into NaNoGenMo [1].  The idea behind this is a very
+simple algorithm:
+
+	1. Set our corpus to a single word, "love."
+	2. For each word in our corpus, replace said word with its definition.
+	3. If we haven't reached 50,000 word, repeat step 2.
+
+  Like I said, simple.
+
+  Not so simple was getting an online dictionary parsed to the point where
+this could be accomplished.  That took a few days of work.  The actual work
+of writing the algorithm above was about an hour or so, then a few seconds
+work for the computer to spew out 170,000 words.
+
+  I was surprised that it look so few interations to balloon up like it did. 
+I guess (?) I expected more iterations, like 10 or so.  But four?  Wow.
+
+  This isn't as impressive as my 2015 entry [2] (which required me to
+implement enough of MS-DOS to run a 30+ year old compiled BASIC program) but
+it still required more work that I expected---I expected this to be just a
+warm-up exercise for this year, but I figure that I should save my ideas for
+following years.  I don't want a repeat of last year (where I couldn't come
+up with an idea).
+
+  Enjoy.
+
+[1]     https://github.com/dariusk/NaNoGenMo-2014
+
+[2]	https://github.com/dariusk/NaNoGenMo-2015
